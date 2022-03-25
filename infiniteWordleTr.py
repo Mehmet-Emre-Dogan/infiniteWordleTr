@@ -4,6 +4,7 @@ from random import randint
 from colorama import init as beginColoring
 from colorama import Fore, Style
 import ctypes
+from collections import defaultdict
 
 wordArr = []
 
@@ -22,27 +23,31 @@ print("Sonsuz Wordle Türkçe oyununa hoş geldiniz! Oyundan sıkılınca CTRL^C
 print(f"--> Konfigürasyon >> DEBUG: {DEBUG}; Maksimum tahmin limiti: {MAX_TRIALS}; Yüklü kelime sayısı: {WORD_COU}")
 
 def checkWord(userWord, selectedWord):
-    colorPatternArr = [Fore.RED for i in range(len(userWord))]
-    matchedLetters = []
-
-    for i, (letterUser, letterSelected) in enumerate(zip(userWord, selectedWord)):
-        if (letterUser in selectedWord):
-            colorPatternArr[i] = Fore.YELLOW
-            
+    colorPatternArr = []
+    # Get th number of occurence each letter
+    letters = defaultdict(int)
+    for letter in selectedWord:
+        letters[letter] += 1
+    
     for i, (letterUser, letterSelected) in enumerate(zip(userWord, selectedWord)):
         if DEBUG:
             print(f"{i} {letterUser} {letterSelected}")
-        
-        if letterUser == letterSelected:
-            colorPatternArr[i] = Fore.GREEN
-            matchedLetters.append(letterUser)
 
+        if letterUser == letterSelected:
+            colorPatternArr.append(Fore.GREEN)
+            letters[letterUser] -= 1
+        elif letters[letterUser]:
+            colorPatternArr.append(Fore.YELLOW)
+            letters[letterUser] -= 1
+        else:
+            colorPatternArr.append(Fore.RED)
+        
     for (letter, color) in zip(userWord, colorPatternArr):
         print(color, end='')
         print(letter + " ", end='')
     print(Style.RESET_ALL)
 
-    if len(matchedLetters) == len(userWord):
+    if selectedWord == userWord:
         return True
     
 def play(selectedWord):
