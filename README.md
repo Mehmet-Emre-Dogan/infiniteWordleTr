@@ -1,0 +1,2 @@
+# infiniteWordleTr
+ Turkish infinite wordle
