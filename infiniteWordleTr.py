@@ -32,15 +32,17 @@ def checkWord(userWord, selectedWord):
     for i, (letterUser, letterSelected) in enumerate(zip(userWord, selectedWord)):
         if DEBUG:
             print(f"{i} {letterUser} {letterSelected}")
-
+        
         if letterUser == letterSelected:
             colorPatternArr.append(Fore.GREEN)
             letters[letterUser] -= 1
-        elif letters[letterUser]:
-            colorPatternArr.append(Fore.YELLOW)
-            letters[letterUser] -= 1
         else:
             colorPatternArr.append(Fore.RED)
+
+    for i, (letterUser, letterSelected) in enumerate(zip(userWord, selectedWord)):
+        if letters[letterUser] > 0:
+            colorPatternArr[i] = Fore.YELLOW
+            letters[letterUser] -= 1
         
     for (letter, color) in zip(userWord, colorPatternArr):
         print(color, end='')
